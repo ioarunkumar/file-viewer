@@ -52,11 +52,11 @@ People receive documents on WhatsApp, email, and USB or file transfer, and need 
 | --- | --- | --- |
 | PDF | .pdf (including encrypted with password) | Full render, search, text selection |
 | Word | .docx | Mobile reflow reader + original layout view |
-| Excel | .xlsx, .csv, .tsv | Scrollable grid, sheet tabs, card view |
-| PowerPoint | .pptx | Slide view + outline view |
+| Excel | .xls, .xlsx, .csv, .tsv | Basic scrollable grid for .xls and .csv; .xlsx and .tsv planned |
+| PowerPoint | .ppt, .pptx | Readable slide text for .ppt; full slide rendering planned |
 | Text | .txt, .md, .log, .json, .xml | Reader with monospace option |
 | Images | .jpg, .png, .webp, .gif, .svg | Zoomable viewer |
-| Legacy Office | .doc, .xls, .ppt | v1.5 (see Roadmap) |
+| Legacy Office | .doc | v1.5 (see Roadmap) |
 | OpenDocument | .odt, .ods, .odp | v1.5 |
 | eBooks | .epub | v2 |
 
@@ -230,7 +230,7 @@ Because the app collects no analytics, success is measured through Play Store/AP
 | **Beta 1** | Text, images, CSV/XLSX grid, themes, search | 4 weeks |
 | **Beta 2** | DOCX mobile reader, PPTX slide and outline view | 5 weeks |
 | **v1.0 (APK release)** | Polish, accessibility, performance tuning, corpus testing | 3 weeks |
-| **v1.5** | Legacy .doc/.xls/.ppt and ODF through the optional LibreOfficeKit high-fidelity engine; PDF annotations | Later |
+| **v1.5** | Legacy .doc, high-fidelity .xls/.ppt and ODF through the optional LibreOfficeKit engine; PDF annotations | Later |
 | **v2** | EPUB, simple editing, optional text-to-speech | Later |
 
 ## 13. Risks and Mitigations

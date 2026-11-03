@@ -161,12 +161,15 @@ interface DocumentSession : AutoCloseable {
 
 - Use Android's `StaticLayout` to paginate to the document's page size and margins, render each page to a canvas, and display with the same tile viewer as PDF. Accept that pagination will differ slightly from desktop Word.
 
-### 5.3 Excel .xlsx / .csv (X-1 to X-8)
+### 5.3 Excel .xls / .xlsx / .csv (X-1 to X-8)
+
+**Current viewer support:** `.xls` and `.csv` open in a basic, read-only scrollable grid. `.xls` workbooks show their sheets and formatted cell values. `.xlsx` and `.tsv` are not yet supported. To limit memory use, `.xls` files are capped at 20 MB, 10,000 rows per sheet, 50 sheets, and 100,000 cells per workbook; `.csv` files are capped at 5 MB, 10,000 rows, and 100,000 cells.
 
 **Parsing**
 
+- For legacy `.xls`, use the Android-compatible Apache POI HSSF reader (`HSSFWorkbook`) and `DataFormatter` to read sheet names and display cell values.
 - Open the ZIP, read `workbook.xml`, `sharedStrings.xml`, `styles.xml`, and each `sheetN.xml` lazily in streaming mode (SAX-style) so a 10 MB file does not load everything into memory.
-- Store cells in a compact structure: sparse row arrays plus an interned string table. Use cached values (`<v>`); do not run a formula engine in v1.
+- For `.xlsx`, store cells in a compact structure: sparse row arrays plus an interned string table. Use cached values (`<v>`); do not run a formula engine in v1.
 - Parse number formats (built-in IDs and custom format codes) into a formatter for dates, currency, percentages, and scientific notation.
 
 **Grid rendering**
@@ -182,10 +185,13 @@ interface DocumentSession : AutoCloseable {
 
 - Auto-detect delimiter and encoding (UTF-8, UTF-16, Windows-1252); stream into the same grid model.
 
-### 5.4 PowerPoint .pptx (S-1 to S-6)
+### 5.4 PowerPoint .ppt / .pptx (S-1 to S-6)
+
+**Current viewer support:** legacy `.ppt` files open in a slide-by-slide text reader using Apache POI HSLF; titles and text are extracted, but original slide styling and images are not rendered. Files are limited to 20 MB, 500 slides, 20,000 shapes, and 2 MB of extracted text. `.pptx` rendering is not yet supported.
 
 **Parsing**
 
+- For legacy `.ppt`, use Apache POI's HSLF parser from `poi-scratchpad` and read each slide's text shapes.
 - Read `presentation.xml` for slide order and size, then each `slideN.xml` along with its layout and master for placeholder inheritance and theme colors and fonts.
 
 **Rendering**
@@ -401,15 +407,17 @@ This section makes the build plan concrete: for every file type, which open-sour
 | PDF (metadata, fallback text) | **PdfBox-Android** (port of Apache PDFBox) | Apache 2.0 | Metadata, document info, fallback text extraction | Glue code only; avoid for rendering (slow, heavy) |
 | PDF (alternative engine) | **androidx.pdf** (Jetpack) and platform `PdfRenderer` | Apache 2.0 / Platform | Backup renderer on devices where the native PDFium build fails | Engine adapter implementing `DocumentEngine` |
 | **Word** (.docx) | **Android `XmlPullParser`** + `java.util.zip` (platform), with **Apache Commons Compress** only if a robust ZIP reader is needed | Platform / Apache 2.0 | Streaming read of `document.xml`, `styles.xml`, `numbering.xml`, media | Content model, style resolver, reflow layout in Jetpack Compose, page view |
+| **Excel** (.xls) | **Apache POI HSSF Android port** (`HSSFWorkbook`) | Apache 2.0 | Read legacy workbook sheets and formatted cell values | Read-only Compose grid |
 | **Excel** (.xlsx) | **fastexcel-reader** (MIT) with the **Aalto XML** StAX implementation (Apache 2.0), or our own SAX-style parser on `XmlPullParser` | MIT / Apache 2.0 | Streaming row and cell reading with low memory use | Style and number-format mapping, grid renderer, frozen panes, card view |
-| **CSV / TSV** | **Apache Commons CSV** (or `kotlin-csv`) | Apache 2.0 | Robust parsing of quotes, delimiters, multiline cells | Delimiter and encoding detection, grid feed |
+| **CSV** | **Apache Commons CSV** | Apache 2.0 | Robust parsing of quoted and multiline cells | Grid rendering |
+| **PowerPoint** (.ppt) | **Apache POI HSLF** (`poi-scratchpad`) | Apache 2.0 | Read legacy presentation slides and text shapes | Read-only slide text viewer |
 | **PowerPoint** (.pptx) | **Android `XmlPullParser`** + `java.util.zip` (platform) | Platform | Reading slides, layouts, masters, themes, media | Slide renderer on `Canvas`, outline view, notes, thumbnails |
 | **Plain text, logs, JSON, XML** | **Android ICU `CharsetDetector`** (`android.icu.text`, built into the platform since API 24) | Platform | Encoding detection (UTF-8, UTF-16, Windows-1252, and others) | Virtualized text view, line numbers, search |
 | **Markdown** (.md) | **commonmark-java** (or JetBrains `markdown`) | BSD-2 / Apache 2.0 | Parsing Markdown to a syntax tree | Compose renderer for headings, lists, code, tables |
 | **Images** (.jpg, .png, .webp, .gif) | **Coil** (with `coil-gif`) and **Telephoto** (zoomable and subsampling image components for Compose) | Apache 2.0 | Decoding, caching, and zoom of large images | Gesture integration with the shared viewer shell |
 | **SVG** | **AndroidSVG** (via `coil-svg`) | Apache 2.0 | Rendering SVG to a drawable | Sandboxing and size limits |
 | **ZIP-protected or encrypted archives** (if needed) | **Zip4j** | Apache 2.0 | Safe reading of encrypted ZIP entries | Password prompt UI |
-| **Legacy Office** (.doc, .xls, .ppt) and **OpenDocument** (.odt, .ods, .odp), v1.5 | **LibreOfficeKit** (from LibreOffice / Collabora's open-source Android work) | MPL 2.0 | High-fidelity conversion and rendering of legacy and ODF formats | Optional separate module or APK to keep v1 small; engine adapter |
+| **Legacy Office** (.doc, and high-fidelity .xls/.ppt rendering) and **OpenDocument** (.odt, .ods, .odp), v1.5 | **LibreOfficeKit** (from LibreOffice / Collabora's open-source Android work) | MPL 2.0 | High-fidelity conversion and rendering of legacy and ODF formats | Optional separate module or APK to keep v1 small; engine adapter |
 | **EPUB** (v2) | **Readium Kotlin Toolkit** | BSD-3 | EPUB parsing, navigation, and rendering | Theming and reader integration |
 
 ### 16.2 Application and Infrastructure Modules
