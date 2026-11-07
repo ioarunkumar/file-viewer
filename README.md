@@ -1,49 +1,102 @@
-# PocketDoc
+<div align="center">
 
-PocketDoc is an Android document viewer prototype built with Kotlin and Jetpack Compose. Choose a file from the Android system picker to read it on your device. The app does not request internet access.
+# 📄 PocketDoc
 
-## Supported files
+**An offline document viewer for Android, built with Kotlin and Jetpack Compose.**
 
-- PDF
-- Legacy Excel workbooks (`.xls`) and CSV
-- Legacy PowerPoint presentations (`.ppt`), displayed as readable slide text
-- Text files: `.txt`, `.md`, `.tsv`, `.json`, `.xml`, and `.log`
-- Images: `.jpg`, `.jpeg`, `.png`, `.webp`, `.gif`, and `.bmp`
+Pick a file from the system picker and read it on your device. No internet permission. No uploads.
 
-Newer Office formats such as `.docx`, `.xlsx`, and `.pptx` are not currently supported. This is a prototype; see the product and technical documents for the broader roadmap.
+![Platform](https://img.shields.io/badge/platform-Android%208.0%2B-3DDC84?logo=android&logoColor=white)
+![Language](https://img.shields.io/badge/Kotlin-Jetpack%20Compose-7F52FF?logo=kotlin&logoColor=white)
+![JDK](https://img.shields.io/badge/JDK-17-orange)
+![Status](https://img.shields.io/badge/status-prototype-yellow)
 
-## Requirements
+[Features](#-features) · [Supported Files](#-supported-files) · [Getting Started](#-getting-started) · [Project Structure](#-project-structure) · [Roadmap](#-roadmap) · [License](#-license)
 
-- Android Studio with Android SDK Platform 35 installed
-- JDK 17
-- An Android device or emulator running Android 8.0 (API 26) or later
+</div>
 
-## Build and run
+---
 
-Open the project in Android Studio, allow Gradle to sync, then run the `app` configuration on a device or emulator.
+## ✨ Features
 
-Alternatively, from PowerShell in the project directory:
+- **Fully offline:** the app does not request internet access
+- **System file picker:** open documents using Android's built-in picker
+- **Multiple formats:** PDFs, spreadsheets, slides, text files, and images
+- **Modern UI:** built entirely with Jetpack Compose
+
+> **Note:** PocketDoc is a prototype. See the [product](#-project-structure) and technical documents for the broader roadmap.
+
+## 📂 Supported Files
+
+| Type | Formats | Notes |
+|------|---------|-------|
+| PDF | `.pdf` | |
+| Spreadsheets | `.xls`, `.csv` | Legacy Excel workbooks |
+| Presentations | `.ppt` | Legacy PowerPoint, shown as readable slide text |
+| Text | `.txt`, `.md`, `.tsv`, `.json`, `.xml`, `.log` | |
+| Images | `.jpg`, `.jpeg`, `.png`, `.webp`, `.gif`, `.bmp` | |
+
+> ⚠️ Newer Office formats (`.docx`, `.xlsx`, `.pptx`) are **not currently supported**.
+
+## 🚀 Getting Started
+
+### Requirements
+
+| Requirement | Version |
+|-------------|---------|
+| Android Studio | With Android SDK Platform 35 installed |
+| JDK | 17 |
+| Device / emulator | Android 8.0 (API 26) or later |
+
+### Run from Android Studio
+
+1. Open the project in Android Studio.
+2. Let Gradle finish syncing.
+3. Select the `app` run configuration and run it on a device or emulator.
+
+### Build from the command line
+
+From PowerShell in the project directory:
 
 ```powershell
 .\gradlew.bat assembleDebug
 ```
 
-The debug APK is written to `app/build/outputs/apk/debug/app-debug.apk`.
+The debug APK is written to:
 
-To install on a connected device or running emulator:
+```
+app/build/outputs/apk/debug/app-debug.apk
+```
+
+### Install on a device
+
+With a device connected or an emulator running:
 
 ```powershell
 .\gradlew.bat installDebug
 ```
 
-## Project layout
+## 🗂 Project Structure
 
-- `apk/` — distributable Android APK
-- `app/` — Android application source and resources
-- `gradle/` — Gradle wrapper configuration
-- `PRD PocketDoc – Offline Mobile Document Viewer for Android.md` — product requirements and roadmap
-- `TID PocketDoc – Technical Implementation Document.md` — technical design and implementation guidance
+```
+PocketDoc/
+├── app/        # Android application source and resources
+├── gradle/     # Gradle wrapper configuration
+├── PRD PocketDoc – Offline Mobile Document Viewer for Android.md
+└── TID PocketDoc – Technical Implementation Document.md
+```
 
-## License
+| Document | Purpose |
+|----------|---------|
+| `PRD PocketDoc – Offline Mobile Document Viewer for Android.md` | Product requirements and roadmap |
+| `TID PocketDoc – Technical Implementation Document.md` | Technical design and implementation guidance |
 
-No project license is specified yet. Check the licenses of the app's dependencies before redistributing it.
+## 🛣 Roadmap
+
+- [ ] Support for `.docx`, `.xlsx`, and `.pptx`
+
+More details are in the product requirements document.
+
+## 📜 License
+
+No license is required.
